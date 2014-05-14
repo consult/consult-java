@@ -1,5 +1,8 @@
 package com.consult.keyvalue;
 
+import com.consult.utils.HttpUtils;
+import com.consult.utils.JsonUtils;
+
 import java.util.List;
 
 public class KeyValueService {
@@ -11,7 +14,13 @@ public class KeyValueService {
     }
 
     public Value get(String key, String dataCentre, boolean recurse) {
-
+        try {
+            String url = ENDPOINT_KV + key;
+            String response = HttpUtils.get(url);
+            return (Value)JsonUtils.fromJson(response, Value.class);
+        }catch(Exception e) {
+            return null;
+        }
     }
 
     public List<Value> list() {

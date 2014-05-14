@@ -6,6 +6,7 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -15,7 +16,7 @@ import java.io.IOException;
 
 public class HttpUtils {
 
-    public String get(String url) throws ClientProtocolException, IOException {
+    public static String get(String url) throws ClientProtocolException, IOException {
 
         CloseableHttpClient httpClient = HttpClients.createDefault();
 
@@ -40,14 +41,24 @@ public class HttpUtils {
         }
     }
 
-    public String post(String url, String body) throws IOException {
+    public static boolean noResponseGet(String url) {
+        try {
+            HttpUtils.get(url);
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public static String put(String url, String body) throws IOException {
 
         CloseableHttpClient httpClient = HttpClients.createDefault();
 
         try {
-            HttpPost httpPost = new HttpPost(url);
+            HttpPut httpPut = new HttpPut(url);
             HttpEntity entity = new ByteArrayEntity(body.getBytes("UTF-8"));
-            httpPost.setEntity(entity);
+            httpPut.setEntity(entity);
 
             ResponseHandler<String> responseHandler = new ResponseHandler<String>() {
                 public String handleResponse(final HttpResponse response) throws ClientProtocolException, IOException {
@@ -61,9 +72,20 @@ public class HttpUtils {
                 }
             };
 
-            return httpClient.execute(httpPost, responseHandler);
+            return httpClient.execute(httpPut, responseHandler);
         }finally{
             httpClient.close();
         }
     }
+
+    public static boolean noResponsePut(String url, String body) {
+        try {
+            HttpUtils.put(url, body);
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 }

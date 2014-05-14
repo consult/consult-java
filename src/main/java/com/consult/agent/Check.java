@@ -8,7 +8,7 @@ public class Check {
 
     public String node;
 
-    public Status status;
+    public String status;
 
     public String notes;
 
